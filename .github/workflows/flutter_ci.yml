@@ -1,32 +1,42 @@
-name: Flutter CI
+name: Flutter CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: 🔧 Instalar Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: "3.22.0"
 
-      - name: Clean build
-        run: flutter clean
-
-      - name: Install dependencies
+      - name: 📦 Instalar dependências
         run: flutter pub get
 
-      # 🚫 Desabilitar testes temporariamente
-      # - name: Run tests
+      - name: 🧹 Análise estática do código
+        run: flutter analyze
+
+      # Você pode reativar os testes depois, se quiser:
+      # - name: 🧪 Executar testes
       #   run: flutter test
 
-      - name: Build APK
+      - name: 🏗️ Build do APK (modo debug)
         run: flutter build apk --debug
+
+      - name: 📤 Publicar APK como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: nourishnet-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+      - name: ✅ Conclusão
+        run: echo "✅ Build Flutter finalizado com sucesso!"
