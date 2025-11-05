@@ -17,14 +17,23 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+    release {
+        // Desativa a remoção de recursos não usados para evitar o erro no CI/CD
+        shrinkResources = false
+        isMinifyEnabled = false
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
     }
+
+    debug {
+        // Debug não precisa de shrink nem minify
+        shrinkResources = false
+        isMinifyEnabled = false
+    }
+}
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
