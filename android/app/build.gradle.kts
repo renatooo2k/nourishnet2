@@ -39,6 +39,3 @@ android {
 flutter {
     source = "../.."
 }
-git add .
-git commit -m "Corrige build.gradle.kts para CI/CD"
-git push origin main
