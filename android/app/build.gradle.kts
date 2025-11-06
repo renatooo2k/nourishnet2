@@ -1,63 +1,39 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+// Arquivo: android/build.gradle.kts
+// Compatível com Kotlin DSL + Flutter 3.22.0 + Gradle 8.x
 
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("dev.flutter.flutter-gradle-plugin")
-}
+import java.util.Properties
 
-val localProperties = gradleLocalProperties(rootDir)
-val flutterRoot = localProperties.getProperty("flutter.sdk")
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toInt() ?: 1
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
-
-android {
-    namespace = "com.example.nourishnet"
-    compileSdk = 34
-
-    defaultConfig {
-        applicationId = "com.example.nourishnet"
-        minSdk = 23
-        targetSdk = 34
-        versionCode = flutterVersionCode
-        versionName = flutterVersionName
-        multiDexEnabled = true
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            // shrinkResources não é suportado em build.gradle.kts — ignorado
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-
-        getByName("debug") {
-            isMinifyEnabled = false
-        }
-    }
-
-    lint {
-        abortOnError = false
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.3.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
     }
 }
 
-flutter {
-    source = "../.."
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
-dependencies {
-    implementation("androidx.multidex:multidex:2.0.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10")
+// Carrega o local.properties (necessário para o Flutter no CI/CD)
+fun getLocalProperties(): Properties {
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { localProperties.load(it) }
+    }
+    return localProperties
+}
+
+val localProperties = getLocalProperties()
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.buildDir)
 }
