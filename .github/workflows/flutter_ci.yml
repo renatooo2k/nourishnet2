@@ -22,8 +22,8 @@ jobs:
       - name: 📦 Instalar dependências
         run: flutter pub get
 
-      - name: Run Flutter Analyze (ignora falhas)
-  run: flutter analyze || true
+      - name: 🧹 Run Flutter Analyze (ignora falhas)
+        run: flutter analyze || true
 
       # Você pode reativar os testes depois, se quiser:
       # - name: 🧪 Executar testes
