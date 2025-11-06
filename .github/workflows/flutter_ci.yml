@@ -22,11 +22,19 @@ jobs:
       - name: 📦 Instalar dependências
         run: flutter pub get
 
-      - name: 🔍 Analisar código (sem falhar se houver warnings)
-        run: flutter analyze || true
+      - name: 🔍 Analisar código (ignorar falhas)
+        run: |
+          echo "🔍 Executando análise estática do Flutter..."
+          flutter analyze || true
+
+      # ⚠️ Testes desativados temporariamente
+      # - name: 🧪 Executar testes
+      #   run: flutter test
 
       - name: 🏗️ Build do APK (modo debug)
-        run: flutter build apk --debug
+        run: |
+          echo "🏗️ Iniciando build do APK (modo debug)..."
+          flutter build apk --debug
 
       - name: 📤 Publicar APK como artefato
         uses: actions/upload-artifact@v4
